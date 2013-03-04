@@ -4,3 +4,4 @@ dependencies[] = votingapi
 dependencies[] = ctools
 package = Voting
 core = 7.x
+configure = admin/config/search/voteupdown
