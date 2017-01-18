@@ -136,31 +136,6 @@ function vud_access_callback($perm, $entity_type, $entity_id, $value, $tag, $acc
 }
 
 /**
- * Implementation of hook_permission().
- */
-function vud_permission() {
-  return array(
-    'use vote up/down' => array(
-      'title' => t('Use Vote Up/Down'),
-      'description' => t('Grant users the ability to cast votes'),
-    ),
-    'administer vote up/down' => array(
-      'title' => t('Administer Vote Up/Down'),
-      'description' => t('Adjust the settings of the Vote Up/Down module'),
-    ),
-    'access vote up/down statistics' => array(
-      'title' => t('Access Vote Up/Down Statistics'),
-      'description' => t('Permission to see who is voting on what'),
-    ),
-    // @todo Maybe change the name adding 'own votes'.
-    'reset vote up/down votes' => array(
-      'title' => t('Reset Votes'),
-      'description' => t('Grant the ability to undo own votes.'),
-    ),
-  );
-}
-
-/**
  * Menu callback; show widget message.
  */
 function vud_denied_vote($js = FALSE, $code=VUD_WIDGET_MESSAGE_ERROR) {
