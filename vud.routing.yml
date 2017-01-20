@@ -1,0 +1,7 @@
+vud.admin_advanced_settings:
+  path: /admin/config/search/voteupdown
+  defaults:
+    _title: 'Vote Up/Down'
+    _form: \Drupal\vud\Form\VudAdminAdvancedSettings
+  requirements:
+    _permission: 'administer vote up/down'

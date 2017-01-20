@@ -14,15 +14,6 @@ module_load_include('inc', 'vud', 'vud.theme');
 function vud_menu() {
   $items = array();
 
-  $items['admin/config/search/voteupdown'] = array(
-    'title'            => 'Vote Up/Down',
-    'description'      => 'Control the functioning of Vote Up/Down.',
-    'page callback'    => 'drupal_get_form',
-    'page arguments'   => array('vud_admin_advanced_settings'),
-    'access arguments' => array('administer vote up/down'),
-    'type'             => MENU_NORMAL_ITEM,
-  );
-
   $items['admin/config/search/voteupdown/advanced'] = array(
     'title'  => 'General',
     'type'   => MENU_DEFAULT_LOCAL_TASK,
@@ -69,26 +60,6 @@ function vud_help($path, $arg) {
       $output = '<p>'. t('Provides a configurable up/down voting widget for other modules to use.') .'</p>';
       return $output;
   }
-}
-
-/**
- * Advanced menu settings callback.
- */
-function vud_admin_advanced_settings() {
-  $form['vud_tag'] = array(
-    '#type'          => 'textfield',
-    '#title'         => t('Voting API tag'),
-    '#default_value' => variable_get('vud_tag', 'vote'),
-    '#description'   => t('Since Vote Up/Down uses Voting API, all votes will be tagged with this term. (default: vote)<br />This tag is useful is you have deployed various modules that use Voting API. It should always be a unique value. Usually, there is NO need to change this.'),
-  );
-  $form['vud_message_on_deny'] = array(
-    '#type'          => 'checkbox',
-    '#title'         => t('Message on denied permission'),
-    '#default_value' => variable_get('vud_message_on_deny', FALSE),
-    '#description'   => t('When this flag is active, a modal window will be shown to the end user instead of avoid showing the voting links'),
-  );
-
-  return system_settings_form($form);
 }
 
 /**
