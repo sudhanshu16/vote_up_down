@@ -37,21 +37,20 @@ CONFIGURATION
  * Configure permissions in Administer >> People >> Permissions
    >> Vote Up/Down:
 
-  - access vote up/down statistics
+  - access vote up/down statistics:
      Users in roles with the 'access vote up/down statistics' permission
      will be able to see the votes performed by each user on its 'Votes' tab.
 
-  - administer vote up/down
+  - administer vote up/down:
      Users in roles with the 'administer vote up/down' permission will be able
      to modify the Voting API tag for Vote Up/Down votes.
 
-  - reset vote up/down votes
+  - reset vote up/down votes:
      Users in roles with the 'reset vote up/down votes' permission will be able
      to undo their own votes if it's also permitted in the configuration for
      the respective module.
 
-  - use vote up/down
-
+  - use vote up/down:
      Users in roles with the 'use vote up/down' permission will be able to
      actually cast a vote with vote up/down(for the callback).
 
