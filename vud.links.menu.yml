@@ -1,0 +1,7 @@
+vud.vud_admin_advanced_settings:
+  title: 'Vote Up/Down'
+  route_name: vud.vud_admin_advanced_settings
+  description: 'Configure the module to display voting widget'
+  parent: system.admin_config_search
+  weight: 99
+

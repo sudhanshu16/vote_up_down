@@ -1,0 +1,3 @@
+vud:
+  voting_api_tag: "vote"
+  message_on_denied_permission: true

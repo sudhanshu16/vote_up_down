@@ -1,0 +1,11 @@
+
+vud.vud_admin_advanced_settings:
+  path: '/admin/config/search/vote-up-down'
+  defaults:
+    _form: '\Drupal\vud\Form\vudAdminAdvancedSettings'
+    _title: 'vudAdminAdvancedSettings'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
