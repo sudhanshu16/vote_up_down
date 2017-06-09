@@ -1,9 +1,10 @@
-INTRODUCTION
+Introduction
 ------------
 
 The Vote Up/Down module allows the user to cast votes on some entities in
 a Drupal site with different widgets. This module uses Voting API to implement
 votes and Chaos Tools to provide AJAX support and make custom widgets.
+
  * For a full description of the module, visit the project page:
    https://drupal.org/project/vote_up_down
 
@@ -11,7 +12,7 @@ votes and Chaos Tools to provide AJAX support and make custom widgets.
    https://drupal.org/project/issues/vote_up_down
 
 
-REQUIREMENTS
+Requirements
 ------------
 
 This module requires the following modules:
@@ -20,18 +21,18 @@ This module requires the following modules:
  * Chaos Tools (https://drupal.org/project/ctools)
 
 
-FEATURES
+Features
 --------
 
- * Voting on entities: nodes, comments and terms.
+ * The module is implemented as a field, you may vote over any field-able entity, node, comment and term are examples of entities.
 
 
-INSTALLATION
+Installation
 ------------
 
- * Install as usual, see http://drupal.org/node/70151 for further information.
+ * Install as usual, see https://www.drupal.org/docs/8/extending-drupal-8/installing-modules for further information.
 
-CONFIGURATION
+Configuration
 -------------
 
  * Configure permissions in Administer >> People >> Permissions
@@ -56,12 +57,12 @@ CONFIGURATION
 
  * Start voting!
 
-CUSTOMIZATION
+Customization
 -------------
 
  * You can write your own widget for Vote Up/Down, and you can put it in
    your module or in your theme. Please take a look to
-   link:WIDGETAPI.html[WIDGETAPI.txt] for more information.
+   [WIDGETAPI.txt](WIDGETAPI.txt) for more information.
 
    Theming widgets and votes
    =========================
@@ -80,11 +81,10 @@ CUSTOMIZATION
     your widget folder(not really recommended).
 
 
-FREQUENTLY ASKED QUESTIONS
+Frequently Asked Questions
 --------------------------
 
 <!--- These needs to be changed but putting them as it as for now --->
-[qanda]
 
 How to display voting widget by API for nodes?::
 If you want to custom how and where to show the widget, you need to
@@ -92,7 +92,7 @@ render manually each part of the standard node `$content` variable
 (fields, body, etc).
 +
 [source,php]
-----
+
 <?php
 // save the rendered value of the widget
 $vud_widget = $node->content['vud_node_widget_display']['#value'];
@@ -118,7 +118,7 @@ Disallow: /?q=vote/
 ----
 
 
-CREDITS
+Credits
 -------
 
 Original Author - Fredrik Jonsson fredrik at combonet dot se
