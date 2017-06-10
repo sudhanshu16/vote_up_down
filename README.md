@@ -1,5 +1,4 @@
-Introduction
-------------
+# Introduction
 
 The Vote Up/Down module allows the user to cast votes on some entities in
 a Drupal site with different widgets. This module uses Voting API to implement
@@ -12,8 +11,7 @@ votes and Chaos Tools to provide AJAX support and make custom widgets.
    https://drupal.org/project/issues/vote_up_down
 
 
-Requirements
-------------
+# Requirements
 
 This module requires the following modules:
 
@@ -21,22 +19,18 @@ This module requires the following modules:
  * Chaos Tools (https://drupal.org/project/ctools)
 
 
-Features
---------
+# Features
 
- * The module is implemented as a field, you may vote over any field-able entity, node, comment and term are examples of entities.
+ The module is implemented as a field, you may vote over any field-able entity, node, comment and term are examples of entities.
 
 
-Installation
-------------
+# Installation
 
- * Install as usual, see https://www.drupal.org/docs/8/extending-drupal-8/installing-modules for further information.
+ Install as usual, see https://www.drupal.org/docs/8/extending-drupal-8/installing-modules for further information.
 
-Configuration
--------------
+# Configuration
 
- * Configure permissions in Administer >> People >> Permissions
-   >> Vote Up/Down:
+ Configure permissions in Administer >> People >> Permissions >> **Vote Up/Down**:
 
   - access vote up/down statistics:
      Users in roles with the 'access vote up/down statistics' permission
@@ -55,34 +49,26 @@ Configuration
      Users in roles with the 'use vote up/down' permission will be able to
      actually cast a vote with vote up/down(for the callback).
 
- * Start voting!
+ Start voting!
 
-Customization
--------------
+# Customization
 
- * You can write your own widget for Vote Up/Down, and you can put it in
-   your module or in your theme. Please take a look to
-   [WIDGETAPI.txt](WIDGETAPI.txt) for more information.
+ You can write your own widget for Vote Up/Down, and you can put it in
+  your module or in your theme. Please take a look to
+  [WIDGETAPI.txt](WIDGETAPI.txt) for more information.
 
-   Theming widgets and votes
-   =========================
-    Since widgets are implemented through plugins, and we have many plugins
-    to choose at runtime, we can not use direct theme templates, so instead
-    we render by hands the templates.
+ ## Theming widgets and votes
+   
+ Since widgets are implemented through plugins, and we have many plugins
+ to choose at runtime, we can not use direct theme templates, so instead
+ we render by hands the templates.
 
-    NOTE: It is not possible to decide dynamically the path where the
-    template is located. In contrast we can dynamically define function and
-    template names.
-
-    So, before rendering the template('widget.tpl.php' or 'votes.tpl.php') we
-    verify in the following order the files:
-
-    This templates can be located on the root of your theme folder or inside
-    your widget folder(not really recommended).
+ NOTE: It is not possible to decide dynamically the path where the
+ template is located. In contrast we can dynamically define function and
+ template names.
 
 
-Frequently Asked Questions
---------------------------
+# Frequently Asked Questions
 
 <!--- These needs to be changed but putting them as it as for now --->
 
@@ -90,9 +76,7 @@ How to display voting widget by API for nodes?::
 If you want to custom how and where to show the widget, you need to
 render manually each part of the standard node `$content` variable
 (fields, body, etc).
-+
-[source,php]
-
+```php
 <?php
 // save the rendered value of the widget
 $vud_widget = $node->content['vud_node_widget_display']['#value'];
@@ -106,25 +90,20 @@ print $node->content['body']['#value'];
 print $vud_widget;
 
 // render more values inside $content
-----
+```
 
 How can I prevent bots to vote when anonymous voting is enabled?::
-When anonymous voting is enabled, you need to modify your 'robots.txt'
+When anonymous voting is enabled, you need to modify your `robots.txt`
 file to prevent bots to vote.
-+
-----
+```
 Disallow: /vote/
 Disallow: /?q=vote/
-----
+```
 
-
-Credits
--------
+# Credits
 
 Original Author - Fredrik Jonsson fredrik at combonet dot se
 
 Orginal 2.x version - Pratul Kalia (lut4rp)
 
 Current Maintainer: Marco Villegas (marvil07)
-
-// vim: set syntax=asciidoc:
