@@ -5,18 +5,18 @@ a Drupal site with different widgets. This module uses Voting API to implement
 votes and Chaos Tools to provide AJAX support and make custom widgets.
 
  * For a full description of the module, visit the project page:
-   https://drupal.org/project/vote_up_down
+   https://www.drupal.org/project/vote_up_down
 
  * To submit bug reports and feature suggestions, or to track changes:
-   https://drupal.org/project/issues/vote_up_down
+   https://www.drupal.org/project/issues/vote_up_down
 
 
 # Requirements
 
 This module requires the following modules:
 
- * Voting API (https://drupal.org/project/votingapi)
- * Chaos Tools (https://drupal.org/project/ctools)
+ * Voting API (https://www.drupal.org/project/votingapi)
+ * Chaos Tools (https://www.drupal.org/project/ctools)
 
 
 # Features
