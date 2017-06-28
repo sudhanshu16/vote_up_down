@@ -1,0 +1,7 @@
+services:
+  plugin.manager.vud:
+    class: Drupal\vud\Plugin\VoteUpDownWidgetManager
+    parent: default_plugin_manager
+  voting_api.lazy_loader:
+      class: Drupal\vud\VotingApiLoader
+      arguments: ['@plugin.manager.vud']

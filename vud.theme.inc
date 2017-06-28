@@ -17,7 +17,7 @@ function vud_ctools_plugin_type() {
   return array(
     'widgets' => array(
       'process' => 'vud_width_plugin_defaults',
-        // Themes can offer this plugin.
+      // Themes can offer this plugin.
       'load themes' => TRUE,
       'cache' => FALSE,
     ),
@@ -33,7 +33,7 @@ function vud_width_plugin_defaults(&$plugin, $info) {
     'extension' => '.tpl.php',
     'css' => $plugin['name'] . '.css',
   );
-
+  
   $plugin += $defaults;
 }
 
@@ -63,7 +63,7 @@ function vud_widget_get_names() {
   foreach (vud_widget_get_all() as $name => $plugin) {
     $names[$name] = $plugin['title'];
   }
-
+  
   asort($names);
   return $names;
 }
@@ -72,16 +72,39 @@ function vud_widget_get_names() {
  * Implementation of hook_theme().
  */
 function vud_theme() {
-  return array(
-    'vud_widget' => array(
-      'function'  => 'vud_widget_proxy',
-      'variables' => array('entity_id' => NULL, 'type' => NULL, 'tag' => NULL, 'widget_theme' => NULL, 'readonly' => NULL, 'widget_message_code' => NULL),
-    ),
-    'vud_votes' => array(
-      'function'  => 'vud_votes_proxy',
-      'variables' => array('entity_id' => NULL, 'type' => NULL, 'tag' => NULL, 'widget_theme' => NULL),
-    ),
-  );
+  return [
+    'vud_widget' => [
+      'variables' => [
+        'id' => NULL,
+        'show_links' => TRUE,
+        'show_up_as_link' => TRUE,
+        'show_down_as_link' => TRUE,
+        'show_reset' => TRUE,
+        'link_up' => NULL,
+        'link_down' => NULL,
+        'link_reset' => NULL,
+        'class_up' => NULL,
+        'class_down' => NULL,
+        'class_reset' => NULL,
+        'link_class_up' => NULL,
+        'link_class_down' => NULL,
+        'link_class_reset' => NULL,
+        'reset_short_text' => NULL,
+        'reset_long_text' => NULL,
+        'up_points' => 0,
+        'down_points' => 0,
+        'vote_sum' => 0,
+      ],
+    ],
+    'vud_votes' => [
+      'variables' => [
+        'entity_id' => NULL,
+        'type' => NULL,
+        'tag' => NULL,
+        'widget_theme' => NULL,
+      ]
+    ]
+  ];
 }
 
 /**
@@ -101,7 +124,7 @@ function vud_pseudo_theming($vote_entity, $template_type, $plugin, &$variables) 
   if ($function = ctools_plugin_get_function($plugin, 'alter template variables')) {
     $function($template_type, $variables);
   }
-
+  
   // @fixme: Remove hardcode.
   $template_file = $plugin['path'] . '/' . $plugin[$template_type . ' template'] . $plugin['extension'];
   return $template_file;
@@ -121,7 +144,7 @@ function vud_pseudo_theming($vote_entity, $template_type, $plugin, &$variables) 
     // @fixme: drupal_discover_template() was removed from core.
     //$template_file = drupal_find_theme_templates($paths, $suggestions, $plugin['extension']);
   }
-
+  
   return $template_file;
 }
 
@@ -134,7 +157,7 @@ function vud_widget_proxy($variables) {
   if (empty($plugin) || empty($plugin['widget template'])) {
     return;
   }
-
+  
   $variables += array(
     'widget_message_code' => VUD_WIDGET_MESSAGE_ERROR,
     'readonly' => FALSE,
@@ -144,29 +167,29 @@ function vud_widget_proxy($variables) {
     'link_class_up' => 'vud-link-up',
     'link_class_down' => 'vud-link-down',
     'link_class_reset' => 'vud-link-reset',
-
+    
     'link_up' => '',
     'link_down' => '',
-
+    
     'class_up' => 'up-active',
     'class_down' => 'down-active',
     'class_reset' => 'reset-inactive',
-
+    
     'show_links' => FALSE,
     'show_reset' => FALSE,
     'show_up_as_link' => FALSE,
     'show_down_as_link' => FALSE,
-
+    
     'reset_long_text' => t('Reset your vote'),
     'reset_short_text' => t('(reset)'),
   );
-
+  
   $type = $variables['type'];
   $entity_id = $variables['entity_id'];
   $tag = $variables['tag'];
   $widget_theme = $variables['widget_theme'];
   $readonly = $variables['readonly'];
-
+  
   drupal_add_library('system', 'drupal.ajax');
   ctools_add_js('ajax-responder');
   ctools_include('ajax');
@@ -174,33 +197,33 @@ function vud_widget_proxy($variables) {
   if ($type == 'comment') {
     drupal_add_css(drupal_get_path('module', 'vud_comment') . '/vud_comment.css');
   }
-
+  
   // Search and add media files.
   vud_add_files('css', $plugin);
   vud_add_files('js', $plugin);
-
+  
   $user_vote =  0;
-
+  
   // Define access per operation, for example when the vote up operation is
   // active this means the down operation should be allowed, as the up vote was
   // already.
   $up_access = $down_access = $reset_access = FALSE;
   if (user_access('use vote up/down')) {
     $criteria = array(
-      'entity_type' => $type,
-      'entity_id' => $entity_id,
-      'tag' => $variables['tag'],
-    ) + votingapi_current_user_identifier();
+        'entity_type' => $type,
+        'entity_id' => $entity_id,
+        'tag' => $variables['tag'],
+      ) + votingapi_current_user_identifier();
     $previous_vote = votingapi_select_single_vote_value($criteria);
-
+    
     $user_vote = isset($previous_vote) ? $previous_vote : 0;
-
+    
     if (!$readonly) {
-
+      
       $up_access = $user_vote <= 0;
       $down_access = $user_vote >= 0;
       $reset_access = ($user_vote != 0) && vud_access_callback('reset vote up/down votes', $type, $entity_id, NULL, $tag);
-
+      
       if (!$up_access && !$down_access) {
         // Although implementing modules have requested a not readonly widget,
         // we prevent access.
@@ -208,7 +231,7 @@ function vud_widget_proxy($variables) {
       }
     }
   }
-
+  
   // Prepare links only if it's not readonly, or if readonly but we need to show
   // a messgae on deny.
   $message_on_deny = variable_get('vud_message_on_deny', FALSE);
@@ -228,7 +251,7 @@ function vud_widget_proxy($variables) {
     }
     $variables['show_links'] = TRUE;
   }
-
+  
   if (!$readonly) {
     // Widget has link(s).
     if ($up_access) {
@@ -260,7 +283,7 @@ function vud_widget_proxy($variables) {
     if ($up_access || $down_access) {
       $variables['link_class_reset'] .= ' denied ctools-use-modal';
     }
-
+    
     // TODO: Get default $widget_message_code or one from $variables.
     $widget_message_code = VUD_WIDGET_MESSAGE_DENIED;
     $variables['link_up'] = url(sprintf('vud/nojs/denied/%d', $widget_message_code));
@@ -273,7 +296,7 @@ function vud_widget_proxy($variables) {
     $variables['link_down'] = '#';
     $variables['link_reset'] = '#';
   }
-
+  
   $result_criteria = array(
     'entity_type' => $type,
     'entity_id' => $entity_id,
@@ -284,7 +307,7 @@ function vud_widget_proxy($variables) {
   $raw_points = votingapi_select_single_result_value($result_criteria);
   $variables['raw_points'] = $raw_points;
   $vote_result = (int)$raw_points;
-
+  
   $criteria = array(
     'entity_type' => $type,
     'entity_id' => $entity_id,
@@ -294,9 +317,9 @@ function vud_widget_proxy($variables) {
   );
   $vote_count = (int)votingapi_select_single_result_value($criteria);
   $variables['vote_count'] = $vote_count;
-
+  
   $variables['unsigned_points'] = $vote_result;
-
+  
   if ($vote_result > 0) {
     $variables['class'] = 'positive';
     $variables['points'] = '+'. $vote_result;
@@ -311,7 +334,7 @@ function vud_widget_proxy($variables) {
     }
   }
   $variables['vote_label'] = format_plural(abs($vote_result), 'vote', 'votes');
-
+  
   $template_file = vud_pseudo_theming($type, 'widget', $plugin, $variables);
   return $plugin['render function']($template_file, $variables);
 }
@@ -324,11 +347,11 @@ function vud_votes_proxy($variables) {
   if (empty($plugin) || empty($plugin['votes template'])) {
     return;
   }
-
+  
   $template_file = $plugin['path'] . '/' . $plugin['votes template'] . $plugin['extension'];
   $variables['plugin'] = $plugin;
   $variables['id'] = 'votes-' . $variables['type'] . '-' . $variables['entity_id'];
-
+  
   $criteria = array(
     'entity_type' => $variables['type'],
     'entity_id' => $variables['entity_id'],
@@ -336,10 +359,10 @@ function vud_votes_proxy($variables) {
     'tag' => $variables['tag'],
     'function' => 'sum'
   );
-
+  
   $vote_result = (int) votingapi_select_single_result_value($criteria);
   $variables['unsigned_points'] = $vote_result;
-
+  
   if ($vote_result > 0) {
     $variables['class'] = 'positive';
     $variables['points'] = '+'. $vote_result;
@@ -354,17 +377,17 @@ function vud_votes_proxy($variables) {
     }
   }
   $variables['vote_label'] = format_plural(abs($vote_result), 'vote', 'votes');
-
+  
   vud_add_files('css', $plugin);  // Search and add the CSS files.
   vud_add_files('js', $plugin);   // Search and add the JS files.
-
+  
   $template_file = vud_pseudo_theming($variables['type'], 'votes', $plugin, $variables);
-
+  
   // not all widget use votes.tpl.php
   if (function_exists($plugin['render function'])) {
     return $plugin['render function']($template_file, $variables);
   }
-
+  
   return '';
 }
 
@@ -376,15 +399,15 @@ function vud_add_files($type, $plugin) {
   if (empty($plugin[$type])) {
     return;
   }
-
+  
   if (is_string($plugin[$type])) {
     $css = array($plugin[$type]);
   }
-
+  
   if (is_array($plugin[$type])) {
     $css = $plugin[$type];
   }
-
+  
   if (!empty($css)) {
     foreach ($css as $file) {
       $function($plugin['path'] . '/' . $file);
@@ -400,15 +423,15 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
   if (!is_numeric($value) || !drupal_valid_token($token, "vote/$type/$entity_id/$value/$tag/$widget", TRUE)) {
     return MENU_ACCESS_DENIED;
   }
-
+  
   $vote = array();
   $casted_vote_criteria = array(
-    'entity_type' => $type,
-    'entity_id' => $entity_id,
-    'tag' => $tag,
-  ) + votingapi_current_user_identifier();
+      'entity_type' => $type,
+      'entity_id' => $entity_id,
+      'tag' => $tag,
+    ) + votingapi_current_user_identifier();
   $casted_vote = votingapi_select_single_vote_value($casted_vote_criteria);
-
+  
   // Sanity-check the incoming values.
   if ($value > 0) {
     $value = 1;
@@ -422,7 +445,7 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
       array('@type' => $type, '@content_id' => $content_id, '@value' => $value, '@tag' => $tag, '@token' => $token));
     return;
   }
-
+  
   $vote['value'] = $value;
   $vote['value_type'] = 'points';
   $tag = $tag ? $tag : variable_get('vud_tag', 'vote');
@@ -431,17 +454,17 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
   $vote['entity_type'] = $type;
   $votes = array(0 => $vote);
   drupal_alter('vud_votes', $votes);
-
+  
   // Do not allow to vote with the same value.
   if ($casted_vote == $votes[0]['value']) {
     return;
   }
   votingapi_set_votes($votes);
-
+  
   if ($ajax == 'ajax') {
     $plugin = vud_widget_get($widget);
     $commands = array();
-
+    
     if ($function = ctools_plugin_get_function($plugin, 'ajax render')) {
       $commands = $function($type, $entity_id, $value, $tag, $token, $widget);
     }
@@ -455,12 +478,12 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
       if (!empty($plugin['widget template'])) {
         $commands[] = ajax_command_replace("#widget-$type-$entity_id", theme('vud_widget', $variables));
       }
-
+      
       if (!empty($plugin['votes template'])) {
         $commands[] = ajax_command_replace("#votes-$type-$entity_id", theme('vud_votes', $variables));
       }
     }
-
+    
     return ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
   else {
@@ -474,10 +497,10 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
 function vud_reset($type, $entity_id, $tag, $widget, $token, $ajax = 'ajax') {
   if (drupal_valid_token($token, "votereset/$type/$entity_id/$tag/$widget", TRUE)) {
     $criteria = array(
-      'entity_type' => $type,
-      'entity_id' => $entity_id,
-      'tag' => $tag,
-    ) + votingapi_current_user_identifier();
+        'entity_type' => $type,
+        'entity_id' => $entity_id,
+        'tag' => $tag,
+      ) + votingapi_current_user_identifier();
     votingapi_delete_votes(votingapi_select_votes($criteria));
     votingapi_recalculate_results($type, $entity_id);
   }
@@ -487,12 +510,12 @@ function vud_reset($type, $entity_id, $tag, $widget, $token, $ajax = 'ajax') {
       array('@type' => $type, '@entity_id' => $entity_id, '@tag' => $tag, '@token' => $token));
     drupal_set_message(t('Oops! There was an error resetting your vote!'), 'warning');
   }
-
+  
   if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
     if ($ajax == 'ajax') {
       $plugin = vud_widget_get($widget);
       $commands = array();
-
+      
       if ($function = ctools_plugin_get_function($plugin, 'ajax render')) {
         $commands = $function($type, $entity_id, $value, $tag, $token, $widget);
       }
@@ -506,12 +529,12 @@ function vud_reset($type, $entity_id, $tag, $widget, $token, $ajax = 'ajax') {
         if (!empty($plugin['widget template'])) {
           $commands[] = ajax_command_replace("#widget-$type-$entity_id", theme('vud_widget', $variables));
         }
-
+        
         if (!empty($plugin['votes template'])) {
           $commands[] = ajax_command_replace("#votes-$type-$entity_id", theme('vud_votes', $variables));
         }
       }
-
+      
       return ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     }
   }
