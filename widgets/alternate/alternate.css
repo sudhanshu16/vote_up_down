@@ -1,20 +1,20 @@
 /* Alternate widget CSS files */
 
 .vud-widget-alternate {
-    float: left;
-    clear: left;
-    padding: 0;
-    margin: 5px 6px 1px 0;
-    width: 50px;
-    height: 54px;
+  float: left;
+  clear: left;
+  padding: 0;
+  margin: 5px 6px 1px 0;
+  width: 50px;
+  height: 54px;
 }
 
 .vud-widget-alternate .up-active,
 .vud-widget-alternate .up-inactive {
-    height: 22px;
-    width: 50px;
-    margin-top: 1px;
-    background-image: url('plus.png');
+  height: 22px;
+  width: 50px;
+  margin-top: 1px;
+  background-image: url('plus.png');
 }
 
 .vud-widget-alternate .up-active,
@@ -27,19 +27,20 @@
 }
 
 .vud-widget-alternate .up-active {
-    cursor: default;
+  cursor: default;
 }
+
 .vud-widget-alternate .up-inactive:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .vud-widget-alternate .alternate-votes-display {
-    font-family: Georgia, serif;
-    border: 1px solid #CCCCCC;
-    text-align: center;
-    height: 26px;
-    font-size: 18px;
-    padding: 2px;
+  font-family: Georgia, serif;
+  border: 1px solid #CCCCCC;
+  text-align: center;
+  height: 26px;
+  font-size: 18px;
+  padding: 2px;
 }
 
 .vud-widget-alternate .ctools-ajaxing {

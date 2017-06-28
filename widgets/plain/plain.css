@@ -17,7 +17,7 @@
   text-decoration: none;
   width: 15px;
   height: 16px;
-  background-image: url('arrows.png');
+  background-image: url('../images/arrows.png');
 }
 
 .vud-widget-plain a.up-inactive,

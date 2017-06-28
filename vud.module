@@ -93,7 +93,7 @@ function vud_access_callback($perm, $entity_type, $entity_id, $value, $tag, $acc
     return FALSE;
   }
 
-  // Invokes hook_vud_access(), gives modules ability to allow or disallow access.
+  // Invokes hook_vud_access(), gives modules abiliXty to allow or disallow access.
   $access_array = module_invoke_all('vud_access', $perm, $entity_type, $entity_id, $value, $tag, $account);
   foreach ($access_array as $access_result) {
     // If one hook implementation want to deny, end there.

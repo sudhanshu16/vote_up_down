@@ -29,6 +29,7 @@
   border-right: 1px solid #999999;
   padding: 0 3px 0 10px;
 }
+
 .vud-widget-thumbs .down-score {
   color: #333;
   display: inline-block;
@@ -61,24 +62,29 @@
   height: 28px;
   font-weight: bold;
   text-align: center;
-  background: url(thumbs.png) 0 0 no-repeat;
+  background: url('thumbs.png') 0 0 no-repeat;
 }
 
 .vud-widget-thumbs .up-active {
   background-position: -54px -0px;
 }
+
 .vud-widget-thumbs .down-active {
   background-position: -27px -0px;
 }
+
 .vud-widget-thumbs .up-inactive {
   background-position: -81px -0px;
 }
+
 .vud-widget-thumbs .down-inactive {
   background-position: -0px -0px;
 }
+
 .vud-widget-thumbs .up-inactive:hover {
   background-position: -54px -0px;
 }
+
 .vud-widget-thumbs .down-inactive:hover {
   background-position: -27px -0px;
 }
@@ -86,7 +92,7 @@
 .vud-widget-thumbs a.ctools-ajaxing,
 .vud-widget-thumbs a.ctools-ajaxing:hover {
   padding-right: 0 !important;
-  background-image: url(status-active.gif);
+  background-image: url('../images/status-active.gif');
   background-position: center;
 }
 

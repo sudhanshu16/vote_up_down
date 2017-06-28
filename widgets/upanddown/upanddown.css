@@ -23,6 +23,7 @@
 .vud-widget-upanddown .up-score {
   color: #333;
 }
+
 .vud-widget-upanddown .down-score {
   color: #333;
 }
@@ -31,6 +32,7 @@
 .vud-widget-upanddown .down-active {
   cursor: default;
 }
+
 .vud-widget-upanddown .up-inactive,
 .vud-widget-upanddown .down-inactive,
 .vud-widget-upanddown .up-active,
@@ -41,24 +43,29 @@
   height: 22px;
   font-weight: bold;
   text-align: center;
-  background: url(arrows.png) 0 0 no-repeat;
+  background: url('../images/arrows.png') 0 0 no-repeat;
 }
 
 .vud-widget-upanddown .up-active {
   background-position: 0 -22px;
 }
+
 .vud-widget-upanddown .down-active {
   background-position: -20px -22px;
 }
+
 .vud-widget-upanddown .up-inactive {
   background-position: 0 -44px;
 }
+
 .vud-widget-upanddown .down-inactive {
   background-position: -20px -44px;
 }
+
 .vud-widget-upanddown .up-inactive:hover {
   background-position: 0 -66px;
 }
+
 .vud-widget-upanddown .down-inactive:hover {
   background-position: -20px -66px;
 }
@@ -66,7 +73,7 @@
 .vud-widget-upanddown a.ctools-ajaxing,
 .vud-widget-upanddown a.ctools-ajaxing:hover {
   padding-right: 0 !important;
-  background-image: url(status-active.gif);
+  background-image: url('../images/status-active.gif');
   background-position: center;
 }
 

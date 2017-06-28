@@ -72,16 +72,10 @@ function vud_widget_get_names() {
  * Implementation of hook_theme().
  */
 function vud_theme() {
-  return array(
-    'vud_widget' => array(
-      'function'  => 'vud_widget_proxy',
-      'variables' => array('entity_id' => NULL, 'type' => NULL, 'tag' => NULL, 'widget_theme' => NULL, 'readonly' => NULL, 'widget_message_code' => NULL),
-    ),
-    'vud_votes' => array(
-      'function'  => 'vud_votes_proxy',
-      'variables' => array('entity_id' => NULL, 'type' => NULL, 'tag' => NULL, 'widget_theme' => NULL),
-    ),
-  );
+  // TODO: I think this wouldn't work, will update this once I find some reference
+  return [
+    "theme path" => drupal_get_path('module', 'vud') . "/widgets/"
+  ];
 }
 
 /**
