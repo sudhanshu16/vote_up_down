@@ -11,33 +11,6 @@ define('VUD_WIDGET_MESSAGE_DENIED', 1);
 define('VUD_REQUIRED_CTOOLS_API', '2.0-alpha');
 
 /**
- * Implements hook_ctools_plugin_type().
- */
-function vud_ctools_plugin_type() {
-  return array(
-    'widgets' => array(
-      'process' => 'vud_width_plugin_defaults',
-        // Themes can offer this plugin.
-      'load themes' => TRUE,
-      'cache' => FALSE,
-    ),
-  );
-}
-
-/**
- * Provide defaults for widgets.
- */
-function vud_width_plugin_defaults(&$plugin, $info) {
-  $defaults = array(
-    'render function' => 'theme_render_template',
-    'extension' => '.tpl.php',
-    'css' => $plugin['name'] . '.css',
-  );
-
-  $plugin += $defaults;
-}
-
-/**
  * Load metadata for a single widget without loading all widgets.
  */
 function vud_widget_get($name) {
@@ -72,16 +45,42 @@ function vud_widget_get_names() {
  * Implementation of hook_theme().
  */
 function vud_theme() {
-  return array(
-    'vud_widget' => array(
-      'function'  => 'vud_widget_proxy',
-      'variables' => array('entity_id' => NULL, 'type' => NULL, 'tag' => NULL, 'widget_theme' => NULL, 'readonly' => NULL, 'widget_message_code' => NULL),
-    ),
-    'vud_votes' => array(
-      'function'  => 'vud_votes_proxy',
-      'variables' => array('entity_id' => NULL, 'type' => NULL, 'tag' => NULL, 'widget_theme' => NULL),
-    ),
-  );
+  return [
+    'vud_widget' => [
+      'variables' => [
+        'id' => NULL,
+        'show_links' => TRUE,
+        'show_up_as_link' => TRUE,
+        'show_down_as_link' => TRUE,
+        'show_reset' => TRUE,
+        'link_up' => NULL,
+        'link_down' => NULL,
+        'link_reset' => NULL,
+        'class_up' => NULL,
+        'class_down' => NULL,
+        'class_reset' => NULL,
+        'link_class_up' => NULL,
+        'link_class_down' => NULL,
+        'link_class_reset' => NULL,
+        'reset_short_text' => NULL,
+        'reset_long_text' => NULL,
+        'up_points' => 0,
+        'down_points' => 0,
+        'vote_sum' => 0,
+        'widget_template' => '',
+        'base_path' => '',
+        'widget_name' => ''
+      ],
+    ],
+    'vud_votes' => [
+      'variables' => [
+        'entity_id' => NULL,
+        'type' => NULL,
+        'tag' => NULL,
+        'widget_theme' => NULL,
+      ]
+    ]
+  ];
 }
 
 /**
