@@ -23,6 +23,7 @@
 .vud-widget-upanddown .up-score {
   color: #333;
 }
+
 .vud-widget-upanddown .down-score {
   color: #333;
 }
@@ -31,6 +32,7 @@
 .vud-widget-upanddown .down-active {
   cursor: default;
 }
+
 .vud-widget-upanddown .up-inactive,
 .vud-widget-upanddown .down-inactive,
 .vud-widget-upanddown .up-active,
@@ -47,18 +49,23 @@
 .vud-widget-upanddown .up-active {
   background-position: 0 -22px;
 }
+
 .vud-widget-upanddown .down-active {
   background-position: -20px -22px;
 }
+
 .vud-widget-upanddown .up-inactive {
   background-position: 0 -44px;
 }
+
 .vud-widget-upanddown .down-inactive {
   background-position: -20px -44px;
 }
+
 .vud-widget-upanddown .up-inactive:hover {
   background-position: 0 -66px;
 }
+
 .vud-widget-upanddown .down-inactive:hover {
   background-position: -20px -66px;
 }
