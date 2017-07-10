@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\vud\Functional;
+namespace Drupal\Tests\vud\Unit;
 
 use Drupal\Component\Plugin\Discovery\DiscoveryInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -14,6 +14,20 @@ use Drupal\vud\Plugin\VoteUpDownWidgetManager;
  * @group vud_widget
  */
 class VoteUpDownWidgetManagerTest extends UnitTestCase {
+  
+  /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = ['vud'];
+  
+  /**
+   * The installation profile to use with this test.
+   *
+   * @var string
+   */
+  protected $profile = 'minimal';
 
   protected $VoteUpDownWidgetManager;
 

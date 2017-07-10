@@ -5,3 +5,22 @@ vud.admin_advanced_settings:
     _form: \Drupal\vud\Form\VudAdminAdvancedSettings
   requirements:
     _permission: 'administer vote up/down'
+
+vud.vote:
+  path: /nojs/vote/{entityTypeId}/{entityId}/{voteValue}
+  defaults:
+    _controller: \Drupal\vud\Controller\VotingApiController::vote
+  requirements:
+    _custom_access: \Drupal\vud\Controller\VotingApiController::voteAccess
+    entityId: ^[0-9_]+
+    entityTypeId: ^[0-9_]+
+    voteValue: ^[0-9_]+
+
+vud.reset:
+  path: /nojs/votereset/{entityTypeId}/{entityId}
+  defaults:
+    _controller: \Drupal\vud\Controller\VotingApiController::voteReset
+  requirements:
+    _custom_access: \Drupal\vud\Controller\VotingApiController::voteAccess
+    entityId: ^[0-9_]+
+    entityTypeId: ^[0-9_]+
