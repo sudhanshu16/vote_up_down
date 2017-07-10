@@ -4,9 +4,9 @@
         {{ vote_label }}
     </div>
     {% if show_links == true %}
-    {% if show_up_as_link == true %}
-    <a href="{{ link_up }}" rel="nofollow" class="{{ link_class_up }}">
-
+        {% if show_up_as_link == true %}
+            <a href="{{ link_up }}" rel="nofollow" class="{{ link_class_up }}">
+        {% endif %}
         <div class="{{ class_up }} updown-up" title="{% trans %}Vote up!{% endtrans %}">+</div>
         <div class="element-invisible">{% trans %}Vote up!{% endtrans %}</div>
         {% if show_up_as_link == true %}
