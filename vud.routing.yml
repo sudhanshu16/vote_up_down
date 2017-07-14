@@ -7,7 +7,7 @@ vud.admin_advanced_settings:
     _permission: 'administer vote up/down'
 
 vud.vote:
-  path: /vote/{entityTypeId}/{entityId}/{voteValue}
+  path: /nojs/vote/{entityTypeId}/{entityId}/{voteValue}
   defaults:
     _controller: \Drupal\vud\Controller\VotingApiController::vote
   requirements:
@@ -17,7 +17,7 @@ vud.vote:
     voteValue: ^[0-9_]+
 
 vud.reset:
-  path: /votereset/{entityTypeId}/{entityId}
+  path: /nojs/votereset/{entityTypeId}/{entityId}
   defaults:
     _controller: \Drupal\vud\Controller\VotingApiController::voteReset
   requirements:
