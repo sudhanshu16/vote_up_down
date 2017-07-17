@@ -11,33 +11,6 @@ define('VUD_WIDGET_MESSAGE_DENIED', 1);
 define('VUD_REQUIRED_CTOOLS_API', '2.0-alpha');
 
 /**
- * Implements hook_ctools_plugin_type().
- */
-function vud_ctools_plugin_type() {
-  return array(
-    'widgets' => array(
-      'process' => 'vud_width_plugin_defaults',
-        // Themes can offer this plugin.
-      'load themes' => TRUE,
-      'cache' => FALSE,
-    ),
-  );
-}
-
-/**
- * Provide defaults for widgets.
- */
-function vud_width_plugin_defaults(&$plugin, $info) {
-  $defaults = array(
-    'render function' => 'theme_render_template',
-    'extension' => '.tpl.php',
-    'css' => $plugin['name'] . '.css',
-  );
-
-  $plugin += $defaults;
-}
-
-/**
  * Load metadata for a single widget without loading all widgets.
  */
 function vud_widget_get($name) {
@@ -72,9 +45,38 @@ function vud_widget_get_names() {
  * Implementation of hook_theme().
  */
 function vud_theme() {
-  // TODO: I think this wouldn't work, will update this once I find some reference
   return [
-    "theme path" => drupal_get_path('module', 'vud') . "/widgets/"
+    'vud_widget' => [
+      'variables' => [
+        'id' => NULL,
+        'show_links' => TRUE,
+        'show_up_as_link' => TRUE,
+        'show_down_as_link' => TRUE,
+        'show_reset' => TRUE,
+        'link_up' => NULL,
+        'link_down' => NULL,
+        'link_reset' => NULL,
+        'class_up' => NULL,
+        'class_down' => NULL,
+        'class_reset' => NULL,
+        'link_class_up' => NULL,
+        'link_class_down' => NULL,
+        'link_class_reset' => NULL,
+        'reset_short_text' => NULL,
+        'reset_long_text' => NULL,
+        'up_points' => 0,
+        'down_points' => 0,
+        'vote_sum' => 0,
+      ],
+    ],
+    'vud_votes' => [
+      'variables' => [
+        'entity_id' => NULL,
+        'type' => NULL,
+        'tag' => NULL,
+        'widget_theme' => NULL,
+      ]
+    ]
   ];
 }
 
@@ -181,10 +183,10 @@ function vud_widget_proxy($variables) {
   $up_access = $down_access = $reset_access = FALSE;
   if (user_access('use vote up/down')) {
     $criteria = array(
-      'entity_type' => $type,
-      'entity_id' => $entity_id,
-      'tag' => $variables['tag'],
-    ) + votingapi_current_user_identifier();
+        'entity_type' => $type,
+        'entity_id' => $entity_id,
+        'tag' => $variables['tag'],
+      ) + votingapi_current_user_identifier();
     $previous_vote = votingapi_select_single_vote_value($criteria);
 
     $user_vote = isset($previous_vote) ? $previous_vote : 0;
@@ -397,10 +399,10 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
 
   $vote = array();
   $casted_vote_criteria = array(
-    'entity_type' => $type,
-    'entity_id' => $entity_id,
-    'tag' => $tag,
-  ) + votingapi_current_user_identifier();
+      'entity_type' => $type,
+      'entity_id' => $entity_id,
+      'tag' => $tag,
+    ) + votingapi_current_user_identifier();
   $casted_vote = votingapi_select_single_vote_value($casted_vote_criteria);
 
   // Sanity-check the incoming values.
@@ -468,10 +470,10 @@ function vud_vote($type, $entity_id, $value, $tag, $widget, $token, $ajax = 'aja
 function vud_reset($type, $entity_id, $tag, $widget, $token, $ajax = 'ajax') {
   if (drupal_valid_token($token, "votereset/$type/$entity_id/$tag/$widget", TRUE)) {
     $criteria = array(
-      'entity_type' => $type,
-      'entity_id' => $entity_id,
-      'tag' => $tag,
-    ) + votingapi_current_user_identifier();
+        'entity_type' => $type,
+        'entity_id' => $entity_id,
+        'tag' => $tag,
+      ) + votingapi_current_user_identifier();
     votingapi_delete_votes(votingapi_select_votes($criteria));
     votingapi_recalculate_results($type, $entity_id);
   }

@@ -10,23 +10,32 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
 
   /**
-   * Method to return the label of the plugin whenever required
+   * Returns the label of the specific plugin instance
    *
    * @return mixed
    */
-  public function get_label();
+  public function getLabel();
+  
+  /**
+   * Returns the widget template for a specific plugin instance
+   *
+   * @return mixed
+   */
+  public function getWidgetTemplate();
 
   /**
-   * Method to alter template variables on render
+   * Alters template variables on render
+   *
    * @param $widget_template
    * @param $variables
    *
    * @return mixed
    */
-  public function alter_template_variables($widget_template, $variables);
+  public function alterTemplateVars($widget_template, $variables);
 
   /**
-   * Method to render ajax
+   * Renders Ajax for the view
+   *
    * @param $type
    * @param $entity_id
    * @param $value
@@ -36,6 +45,13 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
    *
    * @return mixed
    */
-  public function ajax_render($type, $entity_id, $value, $tag, $token, $widget);
+  public function ajaxRender($type, $entity_id, $value, $tag, $token, $widget);
+  
+  /**
+   * Returns renderable array for the plugin
+   *
+   * @return mixed
+   */
+  public function build();
 
 }

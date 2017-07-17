@@ -6,6 +6,14 @@ vud.admin_advanced_settings:
   requirements:
     _permission: 'administer vote up/down'
 
+vud.plain:
+  path: '/vud/plain',
+  defaults:
+    _controller: '\Drupal\vud\Controller\VoteUpDownTestController::renderWidget'
+    _title: 'Vote Up/Down Plain widget'
+  requirements:
+    _permission: 'access content'
+
 vud.vote:
   path: /nojs/vote/{entityTypeId}/{entityId}/{voteValue}
   defaults:

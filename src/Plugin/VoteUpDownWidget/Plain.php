@@ -5,7 +5,7 @@ namespace Drupal\vud\Plugin\VoteUpDownWidget;
 use Drupal\vud\Plugin\VoteUpDownWidgetBase;
 
 /**
- * Assigns ownership of a node to a user.
+ * Plugin "plain" of type VoteUpDownWidget.
  *
  * @VoteUpDownWidget(
  *   id = "plain",
@@ -13,7 +13,5 @@ use Drupal\vud\Plugin\VoteUpDownWidgetBase;
  *  )
  */
 class Plain extends VoteUpDownWidgetBase {
-
-
 
 }

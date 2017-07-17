@@ -126,19 +126,6 @@ function vud_denied_vote($js = FALSE, $code=VUD_WIDGET_MESSAGE_ERROR) {
 }
 
 /**
- * Implements hook_ctools_plugin_directory().
- */
-function vud_ctools_plugin_directory($module, $type) {
-  // Safety: go away if CTools is not at an appropriate version.
-  if (!module_invoke('ctools', 'api_version', VUD_REQUIRED_CTOOLS_API)) {
-    return;
-  }
-  if ($module == 'vud' && $type == 'widgets') {
-    return 'widgets';
-  }
-}
-
-/**
  * Implementation of votingapi hook_votingapi_results_alter().
  *
  * Add positive/negative aggregations for VotingAPI cache points.

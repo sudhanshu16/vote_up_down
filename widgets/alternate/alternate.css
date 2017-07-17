@@ -14,7 +14,7 @@
   height: 22px;
   width: 50px;
   margin-top: 1px;
-  background-image: url('plus.png');
+  background-image: url(plus.png);
 }
 
 .vud-widget-alternate .up-active,

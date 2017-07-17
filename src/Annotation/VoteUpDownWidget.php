@@ -5,7 +5,7 @@ namespace Drupal\vud\Annotation;
 use Drupal\Component\Annotation\Plugin;
 
 /**
- * Defines a Vote Up/Down Field item annotation object.
+ * Defines a Vote Up/Down Widget annotation object.
  *
  * @see \Drupal\vud\Plugin\VoteUpDownFieldManager
  * @see plugin_api
@@ -31,17 +31,17 @@ class VoteUpDownWidget extends Plugin {
   public $label;
 
   /**
-   * TODO: description of variable to be updated
+   * Filename of the plugin used.
    *
    * @var string
    */
-  public $widgetTemplate;
+  public $widget_template;
 
   /**
-   * TODO: description of variable to be updated
+   * Filename of the template used for showing votes
    *
    * @var string
    */
-  public $voteTemplate;
+  public $vote_template;
 
 }

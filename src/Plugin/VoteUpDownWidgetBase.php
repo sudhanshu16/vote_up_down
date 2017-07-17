@@ -13,50 +13,28 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
   use StringTranslationTrait;
 
   /**
-   * Get label for the plugin
-   *
-   * @return mixed
+   * {@inheritdoc}
    */
-  public function get_label() {
+  public function getLabel() {
     return $this->getPluginDefinition()['label'];
   }
 
   /**
-   * @param $template_type
-   * @param $variables
+   * {@inheritdoc}
    */
+  public function getWidgetTemplate() {
+    return $this->getPluginDefinition()['widget_template'];
+  }
 
-  function alter_template_vars($template_type, &$variables) {
-    if ($template_type == 'thumbs') {
-      $criteria['entity_id'] = $variables['entity_id'];
-      $criteria['entity_type'] = $variables['type'];
-      $criteria['value_type'] = 'points';
-      $criteria['tag'] = $variables['tag'];
-      $criteria['function'] = 'sum';
-      $vote_sum = votingapi_select_single_result_value($criteria);
-      $variables['vote_sum'] = ($vote_sum) ? $vote_sum : 0;
-    }
-    else {
-      $criteria = [
-        'entity_type' => $variables['type'],
-        'entity_id' => $variables['entity_id'],
-        'value_type' => 'points',
-        'tag' => $variables['tag'],
-        'function' => 'positives',
-      ];
-      $positives = (int) votingapi_select_single_result_value($criteria);
-      $variables['up_points'] = $positives;
-
-      $criteria = [
-        'entity_type' => $variables['type'],
-        'entity_id' => $variables['entity_id'],
-        'value_type' => 'points',
-        'tag' => $variables['tag'],
-        'function' => 'negatives',
-      ];
-      $negatives = (int) votingapi_select_single_result_value($criteria);
-      $variables['down_points'] = $negatives;
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function build() {
+    return [
+      '#theme' => 'vud_widget',
+      '#widget_template' => $this->getWidgetTemplate(),
+      '#base_path' => base_path(),
+    ];
   }
 
 }
