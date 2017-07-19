@@ -9,12 +9,17 @@ use Drupal\Tests\UnitTestCase;
 use Drupal\vud\Plugin\VoteUpDownWidgetManager;
 
 /**
- * Test the manager class of the VoteUpDownWidget
+ * A Unit test to check if the plugins are working fine.
+ *
+ * @covers \Drupal\vud\Plugin\VoteUpDownWidgetManager
  *
  * @group vud_widget
  */
 class VoteUpDownWidgetManagerTest extends UnitTestCase {
 
+  /**
+   * Manager of the plugin-type to be tested
+   */
   protected $voteUpDownWidgetManager;
 
   /**
@@ -28,27 +33,27 @@ class VoteUpDownWidgetManagerTest extends UnitTestCase {
     $this->voteUpDownWidgetManager = new VoteUpDownWidgetManager(new \ArrayObject(), $cache_backend->reveal(), $module_handler->reveal());
 
     $discovery = $this->prophesize(DiscoveryInterface::class);
-    // Create a plugin of the type
+
     $discovery->getDefinitions()->willReturn([
       'newPlugin' => [
-        'plugin_id' => 'new plugin',
-        'label' => 'new plugin type',
-        'widgetTemplate' => 'plain',
-        'voteTemplate' => 'vote'
+        'id' => 'new_plugin',
+        'admin_label' => @t('New Plugin'),
+        'description' => 'New plugin type'
       ],
     ]);
-    // Force the discovery object onto the block manager.
+
     $property = new \ReflectionProperty(VoteUpDownWidgetManager::class, 'discovery');
     $property->setAccessible(TRUE);
     $property->setValue($this->voteUpDownWidgetManager, $discovery->reveal());
   }
 
   /**
-   * @covers ::getDefinitions
+   * Tests if the plugin created by the test is same as that of the original definition.
    */
-  public function testDefinitions() {
+  public function testVoteUpDownWidget() {
     $definitions = $this->voteUpDownWidgetManager->getDefinitions();
     $this->assertSame(['newPlugin'], array_keys($definitions));
+    $this->assertEquals('as', 'new_plugin');
   }
 
 }

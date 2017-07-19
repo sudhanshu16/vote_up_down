@@ -5,11 +5,12 @@ namespace Drupal\vud\Plugin\VoteUpDownWidget;
 use Drupal\vud\Plugin\VoteUpDownWidgetBase;
 
 /**
- * Plugin "alternate" of type VoteUpDownWidget.
+ * Provides the "alternate" Vote Up/Down widget
  *
  * @VoteUpDownWidget(
  *   id = "alternate",
- *   label = @Translation("Alternate rating widget")
+ *   admin_label = @Translation("Alternate"),
+ *   description = @Translation("Provides two symbols, plus and minus.")
  *  )
  */
 class Alternate extends VoteUpDownWidgetBase {

@@ -25,8 +25,8 @@ class VoteUpDownWidgetManager extends DefaultPluginManager {
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
     parent::__construct('Plugin/VoteUpDownWidget', $namespaces, $module_handler, 'Drupal\vud\Plugin\VoteUpDownWidgetInterface', 'Drupal\vud\Annotation\VoteUpDownWidget');
 
-    $this->alterInfo('vud_vud_info');
-    $this->setCacheBackend($cache_backend, 'vud_vud_plugins');
+    $this->alterInfo('vud_widget');
+    $this->setCacheBackend($cache_backend, 'vud_widget_plugins');
   }
 
 }
