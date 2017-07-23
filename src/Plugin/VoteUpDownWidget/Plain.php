@@ -9,7 +9,8 @@ use Drupal\vud\Plugin\VoteUpDownWidgetBase;
  *
  * @VoteUpDownWidget(
  *   id = "plain",
- *   label = @Translation("Plain i.e simple up and down arrow rating widget")
+ *   label = @Translation("Plain i.e simple up and down arrow rating widget"),
+ *   widget_template = "plain"
  *  )
  */
 class Plain extends VoteUpDownWidgetBase {

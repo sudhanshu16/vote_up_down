@@ -15,7 +15,7 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
    * @return mixed
    */
   public function getLabel();
-  
+
   /**
    * Returns the widget template for a specific plugin instance
    *
@@ -46,7 +46,7 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
    * @return mixed
    */
   public function ajaxRender($type, $entity_id, $value, $tag, $token, $widget);
-  
+
   /**
    * Returns renderable array for the plugin
    *

@@ -45,6 +45,10 @@ function vud_widget_get_names() {
  * Implementation of hook_theme().
  */
 function vud_theme() {
+
+  $module_handler = \Drupal::service('module_handler');
+  $module_path = $module_handler->getModule('vud')->getPath();
+
   return [
     'vud_widget' => [
       'variables' => [
@@ -67,6 +71,8 @@ function vud_theme() {
         'up_points' => 0,
         'down_points' => 0,
         'vote_sum' => 0,
+        'widget_template' => '',
+        'base_path' => $module_path,
       ],
     ],
     'vud_votes' => [

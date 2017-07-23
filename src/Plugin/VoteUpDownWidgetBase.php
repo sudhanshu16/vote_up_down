@@ -30,11 +30,7 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
    * {@inheritdoc}
    */
   public function build() {
-    return [
-      '#theme' => 'vud_widget',
-      '#widget_template' => $this->getWidgetTemplate(),
-      '#base_path' => base_path(),
-    ];
+
   }
 
 }
