@@ -4,6 +4,8 @@ namespace Drupal\vud\Plugin;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Url;
+use Drupal\votingapi\VoteResultFunctionManager;
 
 
 /**
@@ -28,83 +30,113 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
   }
 
   /**
-   * @param bool $js
-   * @param int  $code
-   *
-   * @return mixed
-   */
-  public function vud_denied_vote($js = FALSE, $code=VUD_WIDGET_MESSAGE_ERROR) {
-    $widget_message_codes = array(
-      VUD_WIDGET_MESSAGE_ERROR => t('Sorry, there was problem on the vote.'),
-      VUD_WIDGET_MESSAGE_DENIED => t('You are not allowed to vote.'),
-    );
-    drupal_alter('vud_widget_message_codes', $widget_message_codes);
-    if ($js) {
-      ctools_include('ajax');
-      ctools_include('modal');
-      ctools_modal_render('', $widget_message_codes[$code]);
-    }
-    else {
-      return $widget_message_codes[$code];
-    }
-  }
-
-  /**
-   * Implementation of votingapi hook_votingapi_results_alter().
-   *
-   * Add positive/negative aggregations for VotingAPI cache points.
-   */
-  public function vud_votingapi_results_alter(&$cache, $entity_type, $entity_id) {
-    // positive points
-    $sql  = "SELECT SUM(v.value) as value_positives, v.tag ";
-    $sql .= "FROM {votingapi_vote} v ";
-    $sql .= "WHERE v.entity_type = :entity_type AND v.entity_id = :entity_id AND v.value_type = 'points' AND v.value > 0 ";
-    $sql .= "GROUP BY v.value_type, v.tag";
-    $result = db_query($sql, array(':entity_type' => $entity_type, ':entity_id' => $entity_id));
-    foreach ($result as $record) {
-      $cache[$record->tag]['points']['positives'] = $record->value_positives;
-    }
-
-    // negative points
-    $sql  = "SELECT SUM(v.value) as value_negatives, v.tag ";
-    $sql .= "FROM {votingapi_vote} v ";
-    $sql .= "WHERE v.entity_type = :entity_type AND v.entity_id = :entity_id AND v.value_type = 'points' AND v.value < 0 ";
-    $sql .= "GROUP BY v.value_type, v.tag";
-    $result = db_query($sql, array(':entity_type' => $entity_type, ':entity_id' => $entity_id));
-    foreach ($result as $record) {
-      $cache[$record->tag]['points']['negatives'] = $record->value_negatives;
-    }
-  }
-
-
-
-  /**
    * {@inheritdoc}
    */
-  public function build($entity) {
+  public function build() {
+    $entities = [];
+    foreach (\Drupal::routeMatch()->getParameters() as $param) {
+      if ($param instanceof \Drupal\Core\Entity\EntityInterface) {
+        $entities[] = $param;
+      }
+    }
+
+    $vote_storage = \Drupal::service('entity.manager')->getStorage('vote');
+
+    $currentUser =  \Drupal::currentUser();
+
+    $entity = $entities[0];
     $entityTypeId = $entity->getEntityTypeId();
     $entityId = $entity->id();
 
     $module_handler = \Drupal::service('module_handler');
     $module_path = $module_handler->getModule('vud')->getPath();
-    return [
+
+    $vote_result_manager = \Drupal::service('plugin.manager.votingapi.resultfunction');
+
+    $up_points = \Drupal::entityQuery('vote')->condition('value', 1)->count()->execute();
+    $down_points = \Drupal::entityQuery('vote')->condition('value', -1)->count()->execute();
+
+    $points = $up_points - $down_points;
+    $unsigned_points = $up_points + $down_points;
+
+    $variables = [
       '#theme' => 'vud_widget',
-      '#link_up' => "nojs/vote/" . $entityTypeId . '/' . $entityId . '/1',
-      '#link_down' => "nojs/vote/" . $entityTypeId . '/' . $entityId . '/-1',
-      '#link_class_up' => 'up-inactive use-ajax',
-      '#link_class_down' => 'down-inactive use-ajax',
-      '#class_up' => 'up-inactive',
-      '#class_down' => 'down-inactive',
       '#widget_template' => $this->getWidgetId(),
       '#base_path' => $module_path,
       '#widget_name' => $this->getWidgetId(),
+      '#up_points' => $up_points,
+      '#down_points' => $down_points,
+      '#points' => $points,
+      '#unsigned_points' => $unsigned_points,
+      '#vote_label' => 'votes',
       '#attached' => [
         'library' => [
           'vud/' . $this->getPluginDefinition()['id'],
           'vud/ajax',
+          'vud/common',
         ]
       ],
     ];
+
+    if(vud_can_vote($currentUser, $entity)){
+      $user_votes_current_entity = $vote_storage->getUserVotes(
+        $currentUser->id(),
+        'points',
+        $entityTypeId,
+        $entityId
+      );
+
+      $variables += [
+        '#link_up' => Url::fromRoute('vud.vote', [
+          'entityTypeId' => $entityTypeId,
+          'entityId' => $entityId,
+          'voteValue' => 1,
+        ]),
+        '#link_down' => Url::fromRoute('vud.vote', [
+          'entityTypeId' => $entityTypeId,
+          'entityId' => $entityId,
+          'voteValue' => -1,
+        ]),
+        '#link_reset' => Url::fromRoute('vud.reset', [
+          'entityTypeId' => $entityTypeId,
+          'entityId' => $entityId,
+        ]),
+        '#show_reset' => TRUE,
+        '#reset_long_text' => t('Reset your vote'),
+        '#reset_short_text' => t('(reset)'),
+        '#link_class_reset' => 'reset element-invisible',
+      ];
+
+      if($user_votes_current_entity != NULL){
+        $user_vote_id = (int)array_values($user_votes_current_entity)[0];
+
+        $user_vote = $vote_storage->load($user_vote_id)->getValue();
+
+
+        if($user_vote != 0) {
+          if($user_vote == 1){
+            $variables['#link_class_up'] = 'up active';
+            $variables['#link_class_down'] = 'down inactive';
+            $variables['#class_up'] = 'up active';
+            $variables['#class_down'] = 'down inactive';
+          }
+          elseif($user_vote == -1){
+            $variables['#link_class_up'] = 'up inactive';
+            $variables['#link_class_down'] = 'down active';
+            $variables['#class_up'] = 'up inactive';
+            $variables['#class_down'] = 'down active';
+          }
+          $variables['#link_class_reset'] = 'reset';
+        }
+      }
+      else{
+        $variables['#link_class_up'] = 'up inactive';
+        $variables['#link_class_down'] = 'down inactive';
+        $variables['#class_up'] = 'up inactive';
+        $variables['#class_down'] = 'down inactive';
+      }
+    }
+    return $variables;
   }
 
   public function alterTemplateVars($widget_template, &$variables){}

@@ -55,11 +55,8 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
   /**
    * Returns renderable array for the plugin
    *
-   * @param $entity EntityInterface.
-   *   The entity this plugin is associated with.
-   *
    * @return array
    */
-  public function build($entity);
+  public function build();
 
 }
