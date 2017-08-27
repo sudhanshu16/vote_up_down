@@ -32,29 +32,30 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
   /**
    * {@inheritdoc}
    */
-  public function build() {
-    $entities = [];
-    foreach (\Drupal::routeMatch()->getParameters() as $param) {
-      if ($param instanceof \Drupal\Core\Entity\EntityInterface) {
-        $entities[] = $param;
-      }
-    }
+  public function build($entity) {
 
     $vote_storage = \Drupal::service('entity.manager')->getStorage('vote');
 
     $currentUser =  \Drupal::currentUser();
 
-    $entity = $entities[0];
     $entityTypeId = $entity->getEntityTypeId();
     $entityId = $entity->id();
 
     $module_handler = \Drupal::service('module_handler');
     $module_path = $module_handler->getModule('vud')->getPath();
 
-    $vote_result_manager = \Drupal::service('plugin.manager.votingapi.resultfunction');
-
-    $up_points = \Drupal::entityQuery('vote')->condition('value', 1)->count()->execute();
-    $down_points = \Drupal::entityQuery('vote')->condition('value', -1)->count()->execute();
+    $up_points = \Drupal::entityQuery('vote')
+      ->condition('value', 1)
+      ->condition('entity_type', $entityTypeId)
+      ->condition('entity_id', $entityId)
+      ->count()
+      ->execute();
+    $down_points = \Drupal::entityQuery('vote')
+      ->condition('value', -1)
+      ->condition('entity_type', $entityTypeId)
+      ->condition('entity_id', $entityId)
+      ->count()
+      ->execute();
 
     $points = $up_points - $down_points;
     $unsigned_points = $up_points + $down_points;
@@ -77,6 +78,8 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
         ]
       ],
     ];
+
+    $variables['#attached']['drupalSettings']['points'] = $points;
 
     if(vud_can_vote($currentUser, $entity)){
       $user_votes_current_entity = $vote_storage->getUserVotes(
@@ -109,11 +112,11 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
 
       if($user_votes_current_entity != NULL){
         $user_vote_id = (int)array_values($user_votes_current_entity)[0];
-
         $user_vote = $vote_storage->load($user_vote_id)->getValue();
 
-
         if($user_vote != 0) {
+          $variables['#attached']['drupalSettings']['uservote'] = $user_vote;
+
           if($user_vote == 1){
             $variables['#link_class_up'] = 'up active';
             $variables['#link_class_down'] = 'down inactive';

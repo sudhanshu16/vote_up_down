@@ -5,34 +5,19 @@
 (function ($, Drupal) {
 
   Drupal.behaviors.voteUpDown = {
-    attach: function(context, settings) {
-      $('.vud-widget .active').click(function (e) {
+    attach: function (context, settings) {
+      $('.vud-widget a').click(function (e) {
         e.preventDefault();
-        return false;
-      });
-      $('.up.inactive').unbind('click');
-      $('.up.inactive, .up.inactive a').click(function(e) {
-        var operation = 'up';
-        var routeUrl = $('a.up').attr('href');
-        voteUpDownService.vote(routeUrl, operation, settings.basePath);
-        e.preventDefault();
-        return false;
-      });
-      $('.down.inactive').unbind('click');
-      $('.down.inactive, .down.inactive a').click(function(e) {
-        var operation = 'down';
-        var routeUrl = $('a.down').attr('href');
-        voteUpDownService.vote(routeUrl, operation, settings.basePath);
-        e.preventDefault();
-        return false;
-      });
-      $('.reset').unbind('click');
-      $('.reset, .reset a').click(function(e) {
-        var operation = 'reset';
-        var routeUrl = $('a.reset').attr('href');
-        voteUpDownService.vote(routeUrl, operation, settings.basePath);
-        e.preventDefault();
-        return false;
+        var baseWidget = $(this).parents('.vud-widget');
+        var routeUrl = $(this).is('a') ? $(this).attr('href') : $(this).parent().attr('href');
+        var operation;
+        if($(this).is('a.up.inactive'))
+          operation = 'up';
+        else if($(this).is('a.down.inactive'))
+          operation = 'down';
+        else
+          operation = 'reset';
+        voteUpDownService.vote(baseWidget, routeUrl, operation, settings.basePath, settings.points, settings.uservote);
       });
     }
   };

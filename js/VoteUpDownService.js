@@ -6,24 +6,31 @@
 
   window.voteUpDownService = (function() {
     function voteUpDownService() {}
-    voteUpDownService.vote = function(url, operation, basePath) {
-      $('.vud-widget').append('<img class="throbber" src="' + drupalSettings.path.baseUrl + '/' + basePath + '/img/status-active.gif">');
+    voteUpDownService.vote = function(baseWidget, url, operation, basePath, points, uservote) {
+      baseWidget.append('<img class="throbber" src="' + drupalSettings.path.baseUrl + '/' + basePath + '/img/status-active.gif">');
       $.ajax({
         type: "GET",
         url: url,
         success: function(response) {
-          $('.throbber').remove();
-          $('.reset').addClass('element-invisible');
-          $('.up.active').removeClass('active').addClass('inactive')
-            .parent().removeClass('active').addClass('inactive');
-          $('.down.active').removeClass('active').addClass('inactive')
-            .parent().removeClass('active').addClass('inactive');
+          baseWidget.find('.throbber').remove();
+          baseWidget.find('.reset').addClass('element-invisible');
+          baseWidget.find('.up.active').each(function () {
+            $(this).removeClass('active').addClass('inactive');
+          });
+          baseWidget.find('.down.active').each(function () {
+            $(this).removeClass('active').addClass('inactive');
+          });
           if(operation !== 'reset') {
-            $('.' + operation).removeClass('inactive').addClass('active')
-              .parent().removeClass('inactive').addClass('active');
-            $('.reset').removeClass('element-invisible');
+            baseWidget.find('.' + operation).each(function () {
+              $(this).removeClass('inactive').addClass('active');
+            });
+            baseWidget.find('.reset').removeClass('element-invisible');
+            points -= uservote;
           }
-          // $('.region.region-highlighted').html("<div class='messages__wrapper layout-container'><div class='messages messages--" + response.message_type + " role='contentinfo'>" + response.message + "</div></div>");
+          else if(operation === 'up')
+            points -= uservote + 1;
+          else
+            points -= uservote - 1;
         }
       });
     };

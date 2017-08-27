@@ -5,6 +5,7 @@ namespace Drupal\vud\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\votingapi\Entity\Vote;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\Core\Access\AccessResultAllowed;
 use Drupal\Core\Access\AccessResult;
@@ -34,7 +35,7 @@ class VotingApiController extends ControllerBase {
    * @param $voteValue
    * @param \Symfony\Component\HttpFoundation\Request $request
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
    */
   public function vote($entityId, $entityTypeId, $voteValue, Request $request) {
 
@@ -70,13 +71,17 @@ class VotingApiController extends ControllerBase {
       'value_type' => $voteTypeId,
     ];
 
-    return new JsonResponse([
-      'vote' => $voteValue,
-      'message_type' => 'status',
-      'operation' => 'voted',
-      'message' => t('Your vote was added.'),
-    ]);
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+      // AJAX request
+      return new JsonResponse([
+        'vote' => $voteValue,
+        'message_type' => 'status',
+        'operation' => 'voted',
+        'message' => t('Your vote was added.'),
+      ]);
+    }
 
+    return new RedirectResponse($entity->toUrl()->toString());
   }
 
   /**
