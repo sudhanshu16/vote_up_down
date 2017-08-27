@@ -4,60 +4,158 @@ namespace Drupal\vud\Plugin;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Url;
+use Drupal\votingapi\VoteResultFunctionManager;
+
 
 /**
- * Base class for Vote Up/Down Widget plugins.
+ * Defines a base block implementation that most blocks plugins will extend.
  */
 abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidgetInterface {
-  
+
   use StringTranslationTrait;
-  
+
   /**
    * {@inheritdoc}
    */
-  public function getLabel() {
-    return $this->getPluginDefinition()['label'];
+  public function getWidgetId() {
+    return $this->getPluginDefinition()['id'];
   }
-  
+
   /**
    * {@inheritdoc}
    */
   public function getWidgetTemplate() {
     return $this->getPluginDefinition()['widget_template'];
   }
-  
+
   /**
    * {@inheritdoc}
    */
-  function alterTemplateVars($widget_template, &$variables) {
-    $criteria = [
-      'entity_type' => $variables['entity_type'],
-      'entity_id' => $variables['entity_id'],
-      'value_type' => $variables['points'],
-      'tag' => $variables['tag'],
-    ];
-    
-    $criteria['function'] = 'sum';
-    $vote_result = votingapi_select_single_result_value($criteria);
-    $variables['vote_sum'] = ($vote_result) ? $vote_result : 0;
-    
-    $criteria['function'] = 'positives';
-    $vote_result = votingapi_select_single_result_value($criteria);
-    $variables['up_points'] = $vote_result;
-    
-    $criteria['function'] = 'negatives';
-    $vote_result = votingapi_select_single_result_value($criteria);
-    $variables['down_points'] = $vote_result;
+  public function alterTemplateVariables(&$variables) {
+    $criteria = [];
+    $criteria['entity_id'] = $variables['entity_id'];
+    $criteria['entity_type'] = $variables['type'];
+    $criteria['value_type'] = 'points';
+
+    $voteResultManager = \Drupal::service('plugin.manager.votingapi.resultfunction');
+
+    // TODO: Implement votingAPI result functions instead of custom queries
   }
-  
+
   /**
    * {@inheritdoc}
    */
-  public function build() {
-    return [
+  public function build($entity) {
+
+    $vote_storage = \Drupal::service('entity.manager')->getStorage('vote');
+
+    $currentUser =  \Drupal::currentUser();
+
+    $entityTypeId = $entity->getEntityTypeId();
+    $entityId = $entity->id();
+
+    $module_handler = \Drupal::service('module_handler');
+    $module_path = $module_handler->getModule('vud')->getPath();
+
+    $up_points = \Drupal::entityQuery('vote')
+      ->condition('value', 1)
+      ->condition('entity_type', $entityTypeId)
+      ->condition('entity_id', $entityId)
+      ->count()
+      ->execute();
+    $down_points = \Drupal::entityQuery('vote')
+      ->condition('value', -1)
+      ->condition('entity_type', $entityTypeId)
+      ->condition('entity_id', $entityId)
+      ->count()
+      ->execute();
+
+    $points = $up_points - $down_points;
+    $unsigned_points = $up_points + $down_points;
+
+    $variables = [
       '#theme' => 'vud_widget',
-      '#widget_template' => $this->getWidgetTemplate(),
+      '#widget_template' => $this->getWidgetId(),
+      '#entity_id' => $entityId,
+      '#entity_type_id' => $entityTypeId,
+      '#base_path' => $module_path,
+      '#widget_name' => $this->getWidgetId(),
+      '#up_points' => $up_points,
+      '#down_points' => $down_points,
+      '#points' => $points,
+      '#unsigned_points' => $unsigned_points,
+      '#vote_label' => 'votes',
+      '#attached' => [
+        'library' => [
+          'vud/' . $this->getWidgetId(),
+          'vud/ajax',
+          'vud/common',
+        ]
+      ],
     ];
+
+    $variables['#attached']['drupalSettings']['points'] = $points;
+
+    if(vud_can_vote($currentUser)){
+      $user_votes_current_entity = $vote_storage->getUserVotes(
+        $currentUser->id(),
+        'points',
+        $entityTypeId,
+        $entityId
+      );
+
+      $variables += [
+        '#link_up' => Url::fromRoute('vud.vote', [
+          'entityTypeId' => $entityTypeId,
+          'entityId' => $entityId,
+          'voteValue' => 1,
+        ]),
+        '#link_down' => Url::fromRoute('vud.vote', [
+          'entityTypeId' => $entityTypeId,
+          'entityId' => $entityId,
+          'voteValue' => -1,
+        ]),
+        '#link_reset' => Url::fromRoute('vud.reset', [
+          'entityTypeId' => $entityTypeId,
+          'entityId' => $entityId,
+        ]),
+        '#show_reset' => TRUE,
+        '#reset_long_text' => t('Reset your vote'),
+        '#reset_short_text' => t('(reset)'),
+        '#link_class_reset' => 'reset element-invisible',
+      ];
+
+      if($user_votes_current_entity != NULL){
+        $user_vote_id = (int)array_values($user_votes_current_entity)[0];
+        $user_vote = $vote_storage->load($user_vote_id)->getValue();
+
+        if($user_vote != 0) {
+          $variables['#attached']['drupalSettings']['uservote'] = $user_vote;
+
+          if($user_vote == 1){
+            $variables['#link_class_up'] = 'up active';
+            $variables['#link_class_down'] = 'down inactive';
+            $variables['#class_up'] = 'up active';
+            $variables['#class_down'] = 'down inactive';
+          }
+          elseif($user_vote == -1){
+            $variables['#link_class_up'] = 'up inactive';
+            $variables['#link_class_down'] = 'down active';
+            $variables['#class_up'] = 'up inactive';
+            $variables['#class_down'] = 'down active';
+          }
+          $variables['#link_class_reset'] = 'reset';
+        }
+      }
+      else{
+        $variables['#link_class_up'] = 'up inactive';
+        $variables['#link_class_down'] = 'down inactive';
+        $variables['#class_up'] = 'up inactive';
+        $variables['#class_down'] = 'down inactive';
+      }
+    }
+    return $variables;
   }
-  
+
 }

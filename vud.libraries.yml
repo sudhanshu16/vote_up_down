@@ -1,3 +1,15 @@
+ajax:
+  js:
+    /core/misc/ajax.js: {}
+    js/VoteUpDownService.js: {}
+    js/VoteUpDown.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery.once
+common:
+  css:
+    theme:
+      css/vud.css: {}
 alternate:
   css:
     theme:
@@ -7,12 +19,12 @@ plain:
     theme:
       widgets/plain/plain.css: {}
 thumbs:
+  js:
+    widgets/thumbs/thumbs.js: {}
   css:
     theme:
       widgets/thumbs/thumbs.css: {}
 upanddown:
-  js:
-    widgets/upanddown/thumbs.js: {}
   css:
     theme:
       widgets/upanddown/upanddown.css: {}

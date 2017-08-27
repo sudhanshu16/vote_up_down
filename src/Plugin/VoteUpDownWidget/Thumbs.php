@@ -5,11 +5,12 @@ namespace Drupal\vud\Plugin\VoteUpDownWidget;
 use Drupal\vud\Plugin\VoteUpDownWidgetBase;
 
 /**
- * Plugin "thumbs" of type VoteUpDownWidget.
+ * Provides the "thumbs" Vote Up/Down widget
  *
  * @VoteUpDownWidget(
  *   id = "thumbs",
- *   label = @Translation("Thumb style rating widget")
+ *   admin_label = @Translation("Thumbs"),
+ *   description = @Translation("Provides two thumbs, up and down.")
  *  )
  */
 class Thumbs extends VoteUpDownWidgetBase {

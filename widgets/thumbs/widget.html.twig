@@ -26,19 +26,12 @@
   </div>
 
   {% if show_reset == true %}
-    <a href="{{ link_reset }}" rel="nofollow" class="element-invisible {{ link_class_reset }}"
-       title="{{ reset_long_text }}">
+    <a href="{{ link_reset }}" rel="nofollow" class="{{ link_class_reset }}" title="{{ reset_long_text }}">
       <div class="{{ class_reset }}">
         {{ reset_short_text }}
       </div>
     </a>
   {% endif %}
-  <p class="vote-current-score">{% trans %}Points{% endtrans %}: <strong>{{ vote_sum }}</strong></p>
-
-  {% if class_up == 'up-active' %}
-    <p class="voted-how">{% trans %}You voted &lsquo;up&rsquo;{% endtrans %}</p>
-  {% elseif class_down == 'down-active' %}
-    <p class="voted-how">{% trans %}You voted &lsquo;down&rsquo;{% endtrans %}</p>
-  {% endif %}
+  <p class="vote-current-score">{% trans %}Points{% endtrans %}: <strong>{{ points }}</strong></p>
 
 </div>

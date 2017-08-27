@@ -1,7 +1,6 @@
 
 .vud-widget-updown {
   width: 50px;
-  float: left;
   padding: 0 0.7em 0 0;
 }
 
@@ -17,7 +16,6 @@
   text-align: center;
   padding-top: 5px;
   margin-bottom: 6px;
-
 }
 
 .vud-widget-updown .updown-score .updown-current-score {
@@ -25,10 +23,10 @@
   font-size: 20px;
 }
 
-.vud-widget-updown .up-inactive,
-.vud-widget-updown .down-inactive {
-  display: block;
-  color: #999999;
+.vud-widget-updown .updown-up.inactive,
+.vud-widget-updown .updown-down.inactive {
+  display: inline-block;
+  color: #999;
   border: 1px solid #ccc;
   width: 20px;
   font-size: 15px;
@@ -37,55 +35,29 @@
   text-align: center;
 }
 
-.vud-widget-updown .up-inactive:hover,
-.vud-widget-updown .down-inactive:hover {
-  font-size: 20px;
+.vud-widget-updown .updown-up.inactive:hover,
+.vud-widget-updown .updown-down.inactive:hover {
+  -webkit-transform: scale(1.2); -moz-transform: scale(1.2); -ms-transform: scale(1.2); -o-transform: scale(1.2); transform: scale(1.2);
+  color: #000;
 }
 
 .vud-widget-updown div.updown-up {
-  float: left;
-  margin-right: 3px;
+  margin-right: 2px;
 }
 
-.vud-widget-updown div.updown-down {
-  float: left;
-  margin-left: 3px;
-}
-
-.vud-widget-updown .up-active,
-.vud-widget-updown .down-active {
-  display: block;
-  color: #000000;
-  border: 1px solid #ccc;
+.vud-widget-updown .updown-up.active,
+.vud-widget-updown .updown-down.active {
+  display: inline-block;
+  border: 1px solid #5a5a5a;
   width: 20px;
-  font-size: 20px;
+  font-size: 15px;
   height: 22px;
   font-weight: bold;
   text-align: center;
-  cursor: default;
+  -webkit-transform: scale(1.2); -moz-transform: scale(1.2); -ms-transform: scale(1.2); -o-transform: scale(1.2); transform: scale(1.2);
+  color: #000;
 }
 
-.vud-widget-updown .ctools-ajaxing {
-  border: 1px solid #ccc;
-  padding-right: 0 !important;
-  display: block;
-  width: 20px;
-  height: 22px;
-  background-position: center;
-  float: left;
-}
-
-.vud-widget-updown .ctools-ajaxing.updown-click-up {
-  margin-right: 3px;
-}
-
-.vud-widget-updown .ctools-ajaxing.updown-click-down {
-  margin-left: 3px;
-}
-
-.vud-widget-updown .ctools-ajaxing div {
-  display: none;
-}
 
 /**
  * Hide elements visually, but keep them available for screen-readers.

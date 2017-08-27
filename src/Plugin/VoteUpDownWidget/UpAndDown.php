@@ -5,12 +5,12 @@ namespace Drupal\vud\Plugin\VoteUpDownWidget;
 use Drupal\vud\Plugin\VoteUpDownWidgetBase;
 
 /**
- * Plugin "upanddown" of type VoteUpDownWidget.
+ * Provides the "upanddown" Vote Up/Down widget
  *
  * @VoteUpDownWidget(
  *   id = "upanddown",
- *   label = @Translation("Up and down arrow rating widget with both Up and
- *   Down votes")
+ *   admin_label = @Translation("Up and Down"),
+ *   description = @Translation("UProvides two arrows, up and down.")
  *  )
  */
 class UpAndDown extends VoteUpDownWidgetBase {

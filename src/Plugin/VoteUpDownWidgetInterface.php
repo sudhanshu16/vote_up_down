@@ -2,6 +2,7 @@
 
 namespace Drupal\vud\Plugin;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
@@ -14,8 +15,8 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
    *
    * @return mixed
    */
-  public function getLabel();
-  
+  public function getWidgetId();
+
   /**
    * Returns the widget template for a specific plugin instance
    *
@@ -24,34 +25,20 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
   public function getWidgetTemplate();
 
   /**
-   * Alters template variables on render
-   *
    * @param $widget_template
    * @param $variables
    *
    * @return mixed
    */
-  public function alterTemplateVars($widget_template, $variables);
+  public function alterTemplateVariables(&$variables);
 
-  /**
-   * Renders Ajax for the view
-   *
-   * @param $type
-   * @param $entity_id
-   * @param $value
-   * @param $tag
-   * @param $token
-   * @param $widget
-   *
-   * @return mixed
-   */
-  public function ajaxRender($type, $entity_id, $value, $tag, $token, $widget);
-  
   /**
    * Returns renderable array for the plugin
    *
-   * @return mixed
+   * @param $entity EntityInterface
+   *
+   * @return array
    */
-  public function build();
+  public function build($entity);
 
 }

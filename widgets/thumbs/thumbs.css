@@ -1,7 +1,6 @@
 .vud-widget-thumbs {
   margin: 5px 10px;
   position: relative;
-  float: left;
 }
 
 .vud-widget-thumbs p {
@@ -26,7 +25,7 @@
 .vud-widget-thumbs .up-score {
   color: #333;
   display: inline-block;
-  border-right: 1px solid #999999;
+  border-right: 1px solid #999;
   padding: 0 3px 0 10px;
 }
 
@@ -44,18 +43,18 @@
   font-size: 0.8em
 }
 
-.vud-widget-thumbs .up-active,
-.vud-widget-thumbs .down-active {
+.vud-widget-thumbs .up.active,
+.vud-widget-thumbs .down.active {
 }
 
 .vote-thumb {
   cursor: pointer;
 }
 
-.vud-widget-thumbs .up-inactive,
-.vud-widget-thumbs .down-inactive,
-.vud-widget-thumbs .up-active,
-.vud-widget-thumbs .down-active {
+.vud-widget-thumbs .up.inactive,
+.vud-widget-thumbs .down.inactive,
+.vud-widget-thumbs .up.active,
+.vud-widget-thumbs .down.active {
   float: left;
   display: block;
   width: 27px;
@@ -65,35 +64,28 @@
   background: url(thumbs.png) 0 0 no-repeat;
 }
 
-.vud-widget-thumbs .up-active {
+.vud-widget-thumbs .up.active {
   background-position: -54px -0px;
 }
 
-.vud-widget-thumbs .down-active {
+.vud-widget-thumbs .down.active {
   background-position: -27px -0px;
 }
 
-.vud-widget-thumbs .up-inactive {
+.vud-widget-thumbs .up.inactive {
   background-position: -81px -0px;
 }
 
-.vud-widget-thumbs .down-inactive {
+.vud-widget-thumbs .down.inactive {
   background-position: -0px -0px;
 }
 
-.vud-widget-thumbs .up-inactive:hover {
+.vud-widget-thumbs .up.inactive:hover {
   background-position: -54px -0px;
 }
 
-.vud-widget-thumbs .down-inactive:hover {
+.vud-widget-thumbs .down.inactive:hover {
   background-position: -27px -0px;
-}
-
-.vud-widget-thumbs a.ctools-ajaxing,
-.vud-widget-thumbs a.ctools-ajaxing:hover {
-  padding-right: 0 !important;
-  background-image: url(status-active.gif);
-  background-position: center;
 }
 
 /**

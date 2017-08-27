@@ -9,46 +9,36 @@
 module_load_include('inc', 'vud', 'vud.theme');
 
 /**
- * Implementation of hook_menu().
+ * Check if the passed user can vote.
+ *
+ * @param $account
+ *  Entity object of an User
+ *
+ * @return bool
  */
-function vud_menu() {
-  $items = array();
+function vud_can_vote($account){
+  return $account->hasPermission("use Vote Up/Down");
+}
 
-  $items['admin/config/search/voteupdown/advanced'] = array(
-    'title'  => 'General',
-    'type'   => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
+/**
+ * Check if the passed user can reset vote.
+ *
+ * @param $account
+ *  Entity object of an User
+ *
+ * @return bool
+ */
+function vud_can_reset_vote($account){
+  return $account->hasPermission("reset vote up/down votes");
+}
 
-  $items['vote/%/%/%/%/%/%'] = array(
-    'title'            => 'Vote',
-    'page callback'    => 'vud_vote',
-    'page arguments'   => array(1, 2, 3, 4, 5, 6),
-    'access callback'  => 'vud_access_callback',
-    'access arguments' => array('use vote up/down', 1, 2, 3, 4),
-    'type'             => MENU_CALLBACK,
-    'file'             => 'vud.theme.inc',
-  );
-
-  $items['votereset/%/%/%/%/%'] = array(
-    'title'            => 'Reset vote',
-    'page callback'    => 'vud_reset',
-    'page arguments'   => array(1, 2, 3, 4, 5),
-    'access callback'  => 'vud_access_callback',
-    'access arguments' => array('reset vote up/down votes', 1, 2, 3, 4),
-    'type'             => MENU_CALLBACK,
-    'file'             => 'vud.theme.inc',
-  );
-
-  $items['vud/%ctools_js/denied/%'] = array(
-    'title'            => 'Vote denied',
-    'page callback'    => 'vud_denied_vote',
-    'page arguments'   => array(1, 3),
-    'access arguments' => array('access content'),
-    'type'             => MENU_CALLBACK,
-  );
-
-  return $items;
+/**
+ * Implements hook_preprocess().
+ */
+function vud_preprocess(&$variables, $hook) {
+  $module_handler = \Drupal::service('module_handler');
+  $module_path = $module_handler->getModule('vud')->getPath();
+  $variables['#attached']['drupalSettings']['basePath'] = $module_path;
 }
 
 /**
@@ -56,127 +46,11 @@ function vud_menu() {
  */
 function vud_help($path, $arg) {
   switch ($path) {
-    case 'admin/help#vud':
+    case 'admin.page.vud':
       $output = '<p>'. t('Provides a configurable up/down voting widget for other modules to use.') .'</p>';
       return $output;
-  }
-}
-
-/**
- * Access callback for votes.
- *
- * @param $perm
- *   A string containing the permission required to modify the vote.
- * @param $entity_type
- *   A string containing the type of content being voted on.
- * @param $entity_id
- *   An integer containing the unique ID of the content being voted on.
- * @param $value
- *   An integer containing the vote value, 1 for an up vote, -1 for a down vote.
- * @param $tag
- *   A string containing the voting API tag.
- * $param $account
- *   An object containing the user voting on the content, NULL for the current
- *   user.
- *
- * @return
- *   A boolean flagging whether or not the user has access to the vote.
- */
-function vud_access_callback($perm, $entity_type, $entity_id, $value, $tag, $account = NULL) {
-  if ($account === NULL) {
-    global $user;
-    $account = $user;
-  }
-
-  // If user do not pass system permissions, deny soon.
-  if (user_access($perm, $account) !== TRUE) {
-    return FALSE;
-  }
-
-  // Invokes hook_vud_access(), gives modules ability to allow or disallow access.
-  $access_array = module_invoke_all('vud_access', $perm, $entity_type, $entity_id, $value, $tag, $account);
-  foreach ($access_array as $access_result) {
-    // If one hook implementation want to deny, end there.
-    if ($access_result !== TRUE) {
+    default:
       return FALSE;
-    }
+      break;
   }
-
-  // If we are here, account should pass.
-  return TRUE;
-}
-
-/**
- * Menu callback; show widget message.
- */
-function vud_denied_vote($js = FALSE, $code=VUD_WIDGET_MESSAGE_ERROR) {
-  $widget_message_codes = array(
-    VUD_WIDGET_MESSAGE_ERROR => t('Sorry, there was problem on the vote.'),
-    VUD_WIDGET_MESSAGE_DENIED => t('You are not allowed to vote.'),
-  );
-  drupal_alter('vud_widget_message_codes', $widget_message_codes);
-  if ($js) {
-    ctools_include('ajax');
-    ctools_include('modal');
-    ctools_modal_render('', $widget_message_codes[$code]);
-  }
-  else {
-    return $widget_message_codes[$code];
-  }
-}
-
-/**
- * Implements hook_ctools_plugin_directory().
- */
-function vud_ctools_plugin_directory($module, $type) {
-  // Safety: go away if CTools is not at an appropriate version.
-  if (!module_invoke('ctools', 'api_version', VUD_REQUIRED_CTOOLS_API)) {
-    return;
-  }
-  if ($module == 'vud' && $type == 'widgets') {
-    return 'widgets';
-  }
-}
-
-/**
- * Implementation of votingapi hook_votingapi_results_alter().
- *
- * Add positive/negative aggregations for VotingAPI cache points.
- */
-function vud_votingapi_results_alter(&$cache, $entity_type, $entity_id) {
-  // positive points
-  $sql  = "SELECT SUM(v.value) as value_positives, v.tag ";
-  $sql .= "FROM {votingapi_vote} v ";
-  $sql .= "WHERE v.entity_type = :entity_type AND v.entity_id = :entity_id AND v.value_type = 'points' AND v.value > 0 ";
-  $sql .= "GROUP BY v.value_type, v.tag";
-  $result = db_query($sql, array(':entity_type' => $entity_type, ':entity_id' => $entity_id));
-  foreach ($result as $record) {
-    $cache[$record->tag]['points']['positives'] = $record->value_positives;
-  }
-
-  // negative points
-  $sql  = "SELECT SUM(v.value) as value_negatives, v.tag ";
-  $sql .= "FROM {votingapi_vote} v ";
-  $sql .= "WHERE v.entity_type = :entity_type AND v.entity_id = :entity_id AND v.value_type = 'points' AND v.value < 0 ";
-  $sql .= "GROUP BY v.value_type, v.tag";
-  $result = db_query($sql, array(':entity_type' => $entity_type, ':entity_id' => $entity_id));
-  foreach ($result as $record) {
-    $cache[$record->tag]['points']['negatives'] = $record->value_negatives;
-  }
-}
-
-/**
- * Implementation of hook_votingapi_metadata_alter().
- */
-function vud_votingapi_metadata_alter(&$data) {
-  $data['functions']['positives'] = array(
-    'name' => t('Positives'),
-    'description' => t('The sum of all positive votes for a content.'),
-    'module' => 'vud',
-  );
-  $data['functions']['negatives'] = array(
-    'name' => t('Negatives'),
-    'description' => t('The sum of all negative votes for a content.'),
-    'module' => 'vud',
-  );
 }
