@@ -18,7 +18,7 @@ use Drupal\vud\Plugin\VoteUpDownWidgetManager;
 class VoteUpDownWidgetManagerTest extends UnitTestCase {
 
   /**
-   * Manager of the plugin-type to be tested
+   * Plugin Manager for VoteUpDownWidget plugin type under test.
    */
   protected $voteUpDownWidgetManager;
 
@@ -50,10 +50,9 @@ class VoteUpDownWidgetManagerTest extends UnitTestCase {
   /**
    * Tests if the plugin created by the test is same as that of the original definition.
    */
-  public function testVoteUpDownWidget() {
+  public function testDefinitions() {
     $definitions = $this->voteUpDownWidgetManager->getDefinitions();
     $this->assertSame(['newPlugin'], array_keys($definitions));
-    $this->assertEquals('as', 'new_plugin');
   }
 
 }

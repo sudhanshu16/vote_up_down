@@ -43,6 +43,7 @@ function vud_theme() {
         'points' => 0,
         'vote_sum' => 0,
         'widget_template' => 'alternate',
+        'template_path' => NULL,
         'base_path' => $module_path,
       ],
     ],

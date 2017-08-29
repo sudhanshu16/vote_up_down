@@ -25,12 +25,24 @@ interface VoteUpDownWidgetInterface extends PluginInspectionInterface {
   public function getWidgetTemplate();
 
   /**
-   * @param $widget_template
+   *
+   * Array containing all info for a plugin instance
    * @param $variables
    *
    * @return mixed
    */
   public function alterTemplateVariables(&$variables);
+
+  /**
+   * Returns the path to the widget template to be used.
+   *
+   * @param $base_path
+   * @param $widget_template
+   * @param $variables
+   *
+   * @return array
+   */
+  public function getWidgetTemplateVars($base_path, $widget_template, &$variables);
 
   /**
    * Returns renderable array for the plugin

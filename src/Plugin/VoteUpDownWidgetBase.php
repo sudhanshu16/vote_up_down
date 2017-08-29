@@ -7,9 +7,8 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\votingapi\VoteResultFunctionManager;
 
-
 /**
- * Defines a base block implementation that most blocks plugins will extend.
+ * Defines a plugin base implementation that corresponding plugins will extend.
  */
 abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidgetInterface {
 
@@ -46,6 +45,15 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
   /**
    * {@inheritdoc}
    */
+  public function getWidgetTemplateVars($base_path, $widget_template, &$variables) {
+    $variables['#template_path'] = $base_path . '/widgets/' . $widget_template . '/widget.html.twig';
+    array_push($variables['#attached']['library'], 'vud/' . $this->getWidgetId());
+    return $variables;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function build($entity) {
 
     $vote_storage = \Drupal::service('entity.manager')->getStorage('vote');
@@ -74,13 +82,15 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
     $points = $up_points - $down_points;
     $unsigned_points = $up_points + $down_points;
 
+    $widgetTemplateId = $this->getWidgetId();
+
     $variables = [
       '#theme' => 'vud_widget',
-      '#widget_template' => $this->getWidgetId(),
+      '#widget_template' => $widgetTemplateId,
       '#entity_id' => $entityId,
       '#entity_type_id' => $entityTypeId,
       '#base_path' => $module_path,
-      '#widget_name' => $this->getWidgetId(),
+      '#widget_name' => $widgetTemplateId,
       '#up_points' => $up_points,
       '#down_points' => $down_points,
       '#points' => $points,
@@ -88,12 +98,13 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
       '#vote_label' => 'votes',
       '#attached' => [
         'library' => [
-          'vud/' . $this->getWidgetId(),
           'vud/ajax',
           'vud/common',
         ]
       ],
     ];
+
+    $this->getWidgetTemplateVars($module_path, $widgetTemplateId, $variables);
 
     $variables['#attached']['drupalSettings']['points'] = $points;
 
@@ -107,18 +118,18 @@ abstract class VoteUpDownWidgetBase extends PluginBase implements VoteUpDownWidg
 
       $variables += [
         '#link_up' => Url::fromRoute('vud.vote', [
-          'entityTypeId' => $entityTypeId,
-          'entityId' => $entityId,
-          'voteValue' => 1,
+          'entity_type_id' => $entityTypeId,
+          'entity_id' => $entityId,
+          'vote_value' => 1,
         ]),
         '#link_down' => Url::fromRoute('vud.vote', [
-          'entityTypeId' => $entityTypeId,
-          'entityId' => $entityId,
-          'voteValue' => -1,
+          'entity_type_id' => $entityTypeId,
+          'entity_id' => $entityId,
+          'vote_value' => -1,
         ]),
         '#link_reset' => Url::fromRoute('vud.reset', [
-          'entityTypeId' => $entityTypeId,
-          'entityId' => $entityId,
+          'entity_type_id' => $entityTypeId,
+          'entity_id' => $entityId,
         ]),
         '#show_reset' => TRUE,
         '#reset_long_text' => t('Reset your vote'),

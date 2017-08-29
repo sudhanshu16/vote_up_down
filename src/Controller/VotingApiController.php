@@ -47,6 +47,10 @@ class VotingApiController extends ControllerBase {
       $entity_id
     );
 
+    $this->entityTypeManager()
+      ->getViewBuilder($entity_type_id)
+      ->resetCache([$entity]);
+
     $vote = Vote::create(['type' => $voteTypeId]);
     $vote->setVotedEntityId($entity_id);
     $vote->setVotedEntityType($entity_type_id);

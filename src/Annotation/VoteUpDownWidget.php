@@ -7,7 +7,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines a Vote Up/Down Widget annotation object.
  *
- * @see \Drupal\vud\Plugin\VoteUpDownFieldManager
+ * @see \Drupal\vud\Plugin\VoteUpDownWidgetManager
  * @see plugin_api
  *
  * @Annotation
